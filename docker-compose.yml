@@ -1,0 +1,54 @@
+version: '3'
+
+services: 
+  api1:
+    build: ./app
+    volumes:
+       - "./app/server.js:/usr/src/app/server.js"
+    depends_on:
+      - postgres
+    environment:
+      - SERVICE_NAME=api1
+      - PROXY_SERVER_NAME=balancer
+
+  api2:
+    build: ./app
+    volumes:
+    - "./app/server.js:/usr/src/app/server.js"
+    depends_on:
+    - postgres
+    environment:
+      - SERVICE_NAME=api2
+      - PROXY_SERVER_NAME=balancer
+
+
+  api3:
+    build: ./app
+    volumes:
+    - "./app/server.js:/usr/src/app/server.js"
+    depends_on:
+    - postgres
+    environment:
+      - SERVICE_NAME=api3
+      - PROXY_SERVER_NAME=balancer
+
+  balancer:
+    build: ./proxy
+    ports:
+      - "5000:5000"
+    volumes:
+       - "./proxy/server.js:/usr/src/app/server.js"
+    environment:
+      - port=8080
+
+  postgres:
+    image: postgres
+    volumes:
+      - "psql-data:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+
+volumes:
+  psql-data:
+
+      
